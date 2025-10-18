@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bunny Pick</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    
+    <div class="container">
+        <header class="header">
+            <div class="title-container">
+                <img src="icons/logo.png" alt="Bunny Pick Logo" class="title-logo">
+                <p class="title-text">Bunny Pick</p>
+            </div>
+            <div class="header-icons">
+                <img src="icons/globe.svg" alt="Select Language">
+                <img src="icons/settings.svg" alt="Settings">
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="preview-well" id="preview-well">
+                <div id="preview"></div>
+                <div class="color-code-display" id="color-code-display"></div>
+            </div>
+            
+            <button id="color-picker-btn" class="pick-button">
+                Start Color Picker
+            </button>
+        </main>
+        
+        
+        <div class="feedback" id="feedback-container">
+            <div id="feedback"></div>
+            <div id="color-info"></div>
+        </div>
+        
+        <footer class="footer">
+            <img src="icons/logo.png" alt="Logo" class="footer-logo">
+            <span>Bunny Pick v1.0.0</span>
+        </footer>
+    </div>
+
+    <!-- Language selection modal -->
+    <div class="language-modal" id="language-modal">
+        <div class="language-content">
+            <div class="language-header">
+                <h3 class="language-title" id="language-title">Select Language</h3>
+                <button class="close-language" id="close-language">&times;</button>
+            </div>
+            <div class="language-list" id="language-list">
+            </div>
+        </div>
+    </div>
+
+    <!-- Color formats modal -->
+    <div class="color-formats" id="color-formats">
+        <div class="color-formats-content">
+            <div class="language-header">
+                <h3 class="language-title" id="format-title">Color Formats</h3>
+                <button class="close-language" id="close-formats">&times;</button>
+            </div>
+            <div class="format-list" id="format-list">
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings modal -->
+    <div class="settings-modal" id="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3 class="settings-title" id="settings-title">Settings</h3>
+                <button class="close-settings" id="close-settings">&times;</button>
+            </div>
+            
+            <div class="settings-section">
+                <div class="section-title">Copy Settings</div>
+                <div class="setting-item">
+                    <span class="setting-label" id="default-format-label">Default Copy Format</span>
+                    <div class="setting-control">
+                        <!-- NEW: Inline style removed -->
+                        <select id="default-format-selector">
+                            <option value="hex" selected>HEX</option>
+                            <option value="rgb">RGB</option>
+                            <option value="hsl">HSL</option>
+                            <option value="hsv">HSV</option>
+                            <option value="cmyk">CMYK</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="section-title">Language</div>
+                <div class="setting-item">
+                    <span class="setting-label" id="language-setting-label">Interface Language</span>
+                    <div class="setting-control">
+                        <!-- NEW: Inline style removed -->
+                        <select id="language-selector">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="version-info">
+                <div>Bunny Pick</div>
+                <div class="version-number">v1.0.0</div>
+                <div style="margin-top: 5px; font-size: 11px; opacity: 0.7;">
+                    Chrome Extension • MIT Open Source
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+    
+</body>
+</html>
+

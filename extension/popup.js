@@ -1,0 +1,555 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const pickButton = document.getElementById('color-picker-btn');
+    const previewCircle = document.getElementById('preview');
+    
+    // Language selection elements
+    const languageModal = document.getElementById('language-modal');
+    const languageList = document.getElementById('language-list');
+    const languageTitle = document.getElementById('language-title');
+    const closeLanguageBtn = document.getElementById('close-language');
+    const globeIcon = document.querySelector('.header-icons img[alt="Select Language"]');
+    
+    // Color format elements
+    const previewWell = document.getElementById('preview-well');
+    const colorCodeDisplay = document.getElementById('color-code-display');
+    const colorFormats = document.getElementById('color-formats');
+    const formatList = document.getElementById('format-list');
+    const formatTitle = document.getElementById('format-title');
+    const closeFormatsBtn = document.getElementById('close-formats');
+    
+    // Settings modal elements
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsTitle = document.getElementById('settings-title');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const defaultFormatSelector = document.getElementById('default-format-selector');
+    const languageSelector = document.getElementById('language-selector');
+    const settingsIcon = document.querySelector('.header-icons img[alt="Settings"]');
+    
+    // Selected color information
+    let selectedColor = null;
+    let defaultFormat = localStorage.getItem('defaultFormat') || 'hex';
+    
+    // Current language (default: browser language or Turkish)
+    let currentLanguage = localStorage.getItem('colorPickerLanguage') || getBrowserLanguage();
+    
+    // Translations - loaded from global.json file
+    let translations = {};
+    
+    // Load global.json file
+    async function loadTranslations() {
+        try {
+            const response = await fetch('lang/global.json');
+            translations = await response.json();
+        } catch (error) {
+            console.error('Translation file could not be loaded:', error);
+            // Fallback translations
+            translations = {
+                'en': {
+                    'title': 'Color Picker',
+                    'button': 'Start Color Picker',
+                    'selecting': 'Selecting...',
+                    'retry': 'Retry',
+                    'languageTitle': 'Select Language',
+                    'settingsTitle': 'Settings',
+                    'defaultFormatLabel': 'Default Copy Format',
+                    'languageSettingLabel': 'Interface Language'
+                }
+            };
+        }
+    }
+    
+    // Language options (English first)
+    const languageOptions = [
+        { code: 'en', name: 'English', flag: '🇺🇸' },
+        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+        { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+        { code: 'es', name: 'Español', flag: '🇪🇸' },
+        { code: 'fr', name: 'Français', flag: '🇫🇷' },
+        { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+        { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+        { code: 'pt', name: 'Português', flag: '🇵🇹' },
+        { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
+        { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+        { code: 'ja', name: '日本語', flag: '🇯🇵' },
+        { code: 'zh', name: '中文', flag: '🇨🇳' }
+    ];
+
+    // Color conversion functions
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return {
+            h: Math.round(h * 360),
+            s: Math.round(s * 100),
+            l: Math.round(l * 100)
+        };
+    }
+
+    function rgbToCmyk(r, g, b) {
+        const c = 1 - (r / 255);
+        const m = 1 - (g / 255);
+        const y = 1 - (b / 255);
+        const k = Math.min(c, m, y);
+        
+        return {
+            c: Math.round((c - k) / (1 - k) * 100) || 0,
+            m: Math.round((m - k) / (1 - k) * 100) || 0,
+            y: Math.round((y - k) / (1 - k) * 100) || 0,
+            k: Math.round(k * 100)
+        };
+    }
+
+    function rgbToHsv(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const diff = max - min;
+        let h = 0;
+
+        if (diff !== 0) {
+            if (max === r) {
+                h = ((g - b) / diff) % 6;
+            } else if (max === g) {
+                h = (b - r) / diff + 2;
+            } else {
+                h = (r - g) / diff + 4;
+            }
+        }
+
+        h = Math.round(h * 60);
+        if (h < 0) h += 360;
+
+        const s = max === 0 ? 0 : Math.round((diff / max) * 100);
+        const v = Math.round(max * 100);
+
+        return { h, s, v };
+    }
+
+    function getColorFormats(hex) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return null;
+
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+        const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+
+        return {
+            hex: hex.toUpperCase(),
+            rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+            hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
+            hsv: `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`,
+            cmyk: `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`
+        };
+    }
+
+    // Detect browser language
+    function getBrowserLanguage() {
+        const browserLang = navigator.language || navigator.userLanguage;
+        const langCode = browserLang.split('-')[0]; // 'en-US' -> 'en'
+        
+        // Supported languages list
+        const supportedLanguages = ['tr', 'en', 'de', 'es', 'fr', 'it', 'ru', 'pt', 'nl', 'ar', 'ja', 'zh'];
+        
+        // Debug: log to console
+        console.log('Browser language:', browserLang, 'Detected code:', langCode);
+        
+        // If browser language is supported, use it
+        if (supportedLanguages.includes(langCode)) {
+            console.log('Supported language selected:', langCode);
+            return langCode;
+        }
+        
+        // If not supported, return English as default
+        console.log('Unsupported language, default English selected');
+        return 'en';
+    }
+
+    // Language change functions
+    function updateLanguage() {
+        const t = translations[currentLanguage];
+        
+        // Update title
+        document.querySelector('.title-text').textContent = t.title;
+        
+        // Update button text
+        pickButton.textContent = t.button;
+        
+        // Update language modal title
+        languageTitle.textContent = t.languageTitle;
+        
+        // Create language options
+        languageList.innerHTML = '';
+        languageOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.className = `language-option ${option.code === currentLanguage ? 'active' : ''}`;
+            div.innerHTML = `
+                <span class="language-flag">${option.flag}</span>
+                <span>${option.name}</span>
+            `;
+            div.addEventListener('click', () => selectLanguage(option.code));
+            languageList.appendChild(div);
+        });
+    }
+
+    function selectLanguage(langCode) {
+        currentLanguage = langCode;
+        localStorage.setItem('colorPickerLanguage', langCode);
+        updateLanguage();
+        closeLanguageModal();
+    }
+
+    function openLanguageModal() {
+        languageModal.classList.add('show');
+    }
+
+    function closeLanguageModal() {
+        languageModal.classList.remove('show');
+    }
+
+    // Globe icon click event
+    if (globeIcon) {
+        globeIcon.addEventListener('click', openLanguageModal);
+    }
+
+    // Modal close events
+    if (closeLanguageBtn) {
+        closeLanguageBtn.addEventListener('click', closeLanguageModal);
+    }
+
+    if (languageModal) {
+        languageModal.addEventListener('click', (e) => {
+            if (e.target === languageModal) {
+                closeLanguageModal();
+            }
+        });
+    }
+
+    // Clipboard copy function (optimized for Chrome extension)
+    async function copyToClipboard(text) {
+        try {
+            // Most reliable method for Chrome extension: temporary text area
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            textArea.style.opacity = '0';
+            textArea.style.pointerEvents = 'none';
+            textArea.setAttribute('readonly', '');
+            textArea.setAttribute('contenteditable', 'true');
+            
+            document.body.appendChild(textArea);
+            
+            // Select text
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // For mobile
+            
+            // Copy
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            if (!successful) {
+                throw new Error('execCommand copy failed');
+            }
+            
+            console.log('Copy successful:', text);
+        } catch (err) {
+            console.error('Copy error:', err);
+            throw new Error('Copy failed: ' + err.message);
+        }
+    }
+
+    // Color formats modal functions
+    function showColorFormats(hex) {
+        const formats = getColorFormats(hex);
+        if (!formats) return;
+
+        const t = translations[currentLanguage];
+        
+        // Update title
+        formatTitle.textContent = t.colorFormatsTitle || 'Color Formats';
+        
+        formatList.innerHTML = '';
+        
+        const formatItems = [
+            { label: 'HEX', value: formats.hex },
+            { label: 'RGB', value: formats.rgb },
+            { label: 'HSL', value: formats.hsl },
+            { label: 'HSV', value: formats.hsv },
+            { label: 'CMYK', value: formats.cmyk }
+        ];
+
+        formatItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'format-item';
+            div.innerHTML = `
+                <span class="format-label">${item.label}</span>
+                <span class="format-value">${item.value}</span>
+            `;
+            div.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Format clicked:', item.label, item.value);
+                
+                try {
+                    await copyToClipboard(item.value);
+                    console.log('Copy successful:', item.value);
+                    
+                    // Successful copy feedback
+                    const originalText = div.querySelector('.format-label').textContent;
+                    div.querySelector('.format-label').textContent = `✓ ${t.copied || 'Copied!'}`;
+                    div.style.background = 'rgba(76, 175, 80, 0.2)';
+                    
+                    setTimeout(() => {
+                        div.querySelector('.format-label').textContent = originalText;
+                        div.style.background = 'rgba(255, 255, 255, 0.05)';
+                    }, 1500);
+                } catch (error) {
+                    console.error('Copy error:', error);
+                    // Show feedback even in error case
+                    const originalText = div.querySelector('.format-label').textContent;
+                    div.querySelector('.format-label').textContent = '❌ Error!';
+                    div.style.background = 'rgba(244, 67, 54, 0.2)';
+                    
+                    setTimeout(() => {
+                        div.querySelector('.format-label').textContent = originalText;
+                        div.style.background = 'rgba(255, 255, 255, 0.05)';
+                    }, 1500);
+                }
+            });
+            formatList.appendChild(div);
+        });
+
+        colorFormats.classList.add('show');
+        previewWell.classList.add('expanded');
+    }
+
+    function hideColorFormats() {
+        colorFormats.classList.remove('show');
+        previewWell.classList.remove('expanded');
+    }
+
+    // Circle click event
+    if (previewWell) {
+        previewWell.addEventListener('click', () => {
+            if (selectedColor) {
+                showColorFormats(selectedColor);
+            }
+        });
+    }
+
+    // Color formats modal close events
+    if (closeFormatsBtn) {
+        closeFormatsBtn.addEventListener('click', hideColorFormats);
+    }
+
+    if (colorFormats) {
+        colorFormats.addEventListener('click', (e) => {
+            if (e.target === colorFormats) {
+                hideColorFormats();
+            }
+        });
+    }
+
+    // Settings modal functions
+    function showSettings() {
+        settingsModal.classList.add('show');
+        updateSettingsLanguage();
+        populateLanguageSelector();
+    }
+
+    function hideSettings() {
+        settingsModal.classList.remove('show');
+    }
+
+    function updateSettingsLanguage() {
+        const t = translations[currentLanguage];
+        settingsTitle.textContent = t.settingsTitle;
+        document.getElementById('default-format-label').textContent = t.defaultFormatLabel;
+        document.getElementById('language-setting-label').textContent = t.languageSettingLabel;
+    }
+
+    function populateLanguageSelector() {
+        languageSelector.innerHTML = '';
+        languageOptions.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option.code;
+            optionElement.textContent = option.name;
+            if (option.code === currentLanguage) {
+                optionElement.selected = true;
+            }
+            languageSelector.appendChild(optionElement);
+        });
+    }
+
+    function updateDefaultFormat() {
+        defaultFormat = defaultFormatSelector.value;
+        localStorage.setItem('defaultFormat', defaultFormat);
+        
+        // If color is selected, show new format
+        if (selectedColor) {
+            const formats = getColorFormats(selectedColor);
+            if (formats) {
+                const formatValue = formats[defaultFormat] || formats.hex;
+                colorCodeDisplay.textContent = formatValue;
+            }
+        }
+    }
+
+    // Settings modal events
+    if (settingsIcon) {
+        settingsIcon.addEventListener('click', showSettings);
+    }
+
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', hideSettings);
+    }
+
+    if (settingsModal) {
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                hideSettings();
+            }
+        });
+    }
+
+    if (defaultFormatSelector) {
+        defaultFormatSelector.addEventListener('change', updateDefaultFormat);
+    }
+
+    if (languageSelector) {
+        languageSelector.addEventListener('change', (e) => {
+            currentLanguage = e.target.value;
+            localStorage.setItem('colorPickerLanguage', currentLanguage);
+            updateLanguage();
+            updateSettingsLanguage();
+        });
+    }
+
+    // Load default format
+    if (defaultFormatSelector) {
+        defaultFormatSelector.value = defaultFormat;
+    }
+
+    // Load translations and apply language settings when page loads
+    async function initializeApp() {
+        await loadTranslations();
+        updateLanguage();
+    }
+    
+    initializeApp();
+
+    // Check if browser supports EyeDropper API
+    if ('EyeDropper' in window) {
+        const eyeDropper = new window.EyeDropper();
+
+        const pickColor = async () => {
+            // Set UI to 'loading' state when button is pressed
+            const t = translations[currentLanguage];
+            pickButton.disabled = true;
+            pickButton.textContent = `⏳ ${t.selecting}`;
+            
+            try {
+                // Open browser's native color picker and wait for user to select color
+                const result = await eyeDropper.open(); 
+                const hexColor = result.sRGBHex.toUpperCase(); // Convert color to uppercase
+
+                // Copy selected color to clipboard in default format
+                const formats = getColorFormats(hexColor);
+                if (formats) {
+                    const formatValue = formats[defaultFormat] || formats.hex;
+                    await copyToClipboard(formatValue);
+                }
+
+                // Update UI and play animations on success
+                updateUIAfterPick(hexColor);
+                
+            } catch (e) {
+                // Handle error case (user cancelled or other error occurred)
+                if (e.name === 'AbortError') {
+                    console.log('Color selection cancelled');
+                } else {
+                    console.error('Color picker error:', e);
+                }
+                resetUI();
+            } finally {
+                // Re-enable button in all cases (successful or error)
+                pickButton.disabled = false;
+                pickButton.textContent = t.retry;
+            }
+        };
+        
+        pickButton.addEventListener('click', pickColor);
+
+        // Function to update interface after color is selected
+        function updateUIAfterPick(hexColor) {
+            selectedColor = hexColor;
+            
+            previewCircle.style.backgroundColor = hexColor;
+            // Small growth animation
+            previewCircle.style.transform = 'scale(1.1)';
+            setTimeout(() => { previewCircle.style.transform = 'scale(1)'; }, 200);
+
+            // Show default format in circle
+            const formats = getColorFormats(hexColor);
+            if (formats) {
+                const formatValue = formats[defaultFormat] || formats.hex;
+                colorCodeDisplay.textContent = formatValue;
+                colorCodeDisplay.classList.add('show');
+            }
+        }
+
+        // Function to reset interface on error or cancel
+        function resetUI() {
+            const t = translations[currentLanguage];
+            selectedColor = null;
+            
+            previewCircle.style.transform = 'scale(0.95)';
+            setTimeout(() => { previewCircle.style.transform = 'scale(1)'; }, 200);
+            
+            // Hide color code in circle
+            colorCodeDisplay.classList.remove('show');
+            colorCodeDisplay.textContent = '';
+            
+            pickButton.textContent = t.button;
+        }
+
+
+    } else {
+        // Browser doesn't support EyeDropper API
+        const t = translations[currentLanguage];
+        pickButton.textContent = '❌ Your Browser Does Not Support This';
+        pickButton.disabled = true;
+    }
+});

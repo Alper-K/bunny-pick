@@ -1,0 +1,70 @@
+{
+  "name": "bunny-pick",
+  "version": "1.0.0",
+  "description": "A modern, multilingual Chrome extension for picking colors from anywhere on your screen",
+  "main": "popup.html",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linter configured\" && exit 0",
+    "build": "echo \"No build process needed\" && exit 0",
+    "dev": "echo \"Load extension in Chrome developer mode\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alper-K/bunny-pick.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "color-picker",
+    "eyedropper",
+    "color-tools",
+    "web-extension",
+    "multilingual",
+    "accessibility",
+    "design-tools"
+  ],
+  "author": {
+    "name": "ALPER KINALI",
+    "url": "https://github.com/Alper-K"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Alper-K/bunny-pick/issues"
+  },
+  "homepage": "https://github.com/Alper-K/bunny-pick#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "Chrome >= 95",
+    "Edge >= 95",
+    "Opera >= 81"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "files": [
+    "icons/",
+    "lang/",
+    "popup.html",
+    "popup.css",
+    "popup.js",
+    "manifest.json",
+    "index.html",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md"
+  ],
+  "extension": {
+    "manifest_version": 3,
+    "permissions": [
+      "activeTab",
+      "clipboardWrite",
+      "storage"
+    ],
+    "supported_browsers": [
+      "Chrome",
+      "Microsoft Edge",
+      "Opera"
+    ]
+  }
+}

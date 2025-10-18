@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Bunny Pick",
+  "version": "1.0.0",
+  "description": "A modern, multilingual Chrome extension for picking colors from anywhere on your screen using the browser's native EyeDropper API",
+  "author": "ALPER KINALI",
+  "homepage_url": "https://github.com/Alper-K/bunny-pick",
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Bunny Pick",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "minimum_chrome_version": "95",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bunny-pick",
+      "strict_min_version": "95.0"
+    }
+  }
+}
