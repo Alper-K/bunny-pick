@@ -1,4 +1,4 @@
-# 🐰 Bunny Pick
+# 🐰 Bunny Pick | Color Picker
 
 <div align="center">
   <img src="web/icons/logo.png" alt="Bunny Pick Logo" width="128" height="128">
