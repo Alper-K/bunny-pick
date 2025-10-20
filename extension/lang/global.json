@@ -14,13 +14,20 @@
         "defaultFormatLabel": "Varsayılan Kopyalama Formatı",
         "languageSettingLabel": "Arayüz Dili",
         "colorFormatsTitle": "Renk Formatları",
-        "copied": "Kopyalandı!"
+        "copied": "Kopyalandı!",
+        "recentColors": "Son Renkler",
+        "clearHistory": "Geçmişi Temizle",
+        "pickColor": "Renk Seç",
+        "generatePalette": "Palet Oluştur",
+        "invertColor": "Rengi Ters Çevir",
+        "lightenColor": "Rengi Açıklaştır",
+        "darkenColor": "Rengi Koyulaştır"
     },
     "en": {
         "title": "Color Picker",
         "button": "Start Color Picker",
         "feedback": "Selecting color...",
-        "success": "Copied to clipboard!", 
+        "success": "Copied to clipboard!",
         "error": "An error occurred",
         "cancel": "Cancelled.",
         "browserNotSupported": "This feature only works in Chrome, Edge, or Opera.",
@@ -31,7 +38,14 @@
         "defaultFormatLabel": "Default Copy Format",
         "languageSettingLabel": "Interface Language",
         "colorFormatsTitle": "Color Formats",
-        "copied": "Copied!"
+        "copied": "Copied!",
+        "recentColors": "Recent Colors",
+        "clearHistory": "Clear History",
+        "pickColor": "Pick Color",
+        "generatePalette": "Generate Palette",
+        "invertColor": "Invert Color",
+        "lightenColor": "Lighten Color",
+        "darkenColor": "Darken Color"
     },
     "de": {
         "title": "Farbauswähler",
@@ -48,7 +62,14 @@
         "defaultFormatLabel": "Standard-Kopierformat",
         "languageSettingLabel": "Oberflächensprache",
         "colorFormatsTitle": "Farbformate",
-        "copied": "Kopiert!"
+        "copied": "Kopiert!",
+        "recentColors": "Letzte Farben",
+        "clearHistory": "Verlauf löschen",
+        "pickColor": "Farbe wählen",
+        "generatePalette": "Palette erstellen",
+        "invertColor": "Farbe invertieren",
+        "lightenColor": "Farbe aufhellen",
+        "darkenColor": "Farbe abdunkeln"
     },
     "es": {
         "title": "Selector de Color",
@@ -65,7 +86,14 @@
         "defaultFormatLabel": "Formato de Copia Predeterminado",
         "languageSettingLabel": "Idioma de la Interfaz",
         "colorFormatsTitle": "Formatos de Color",
-        "copied": "¡Copiado!"
+        "copied": "¡Copiado!",
+        "recentColors": "Colores Recientes",
+        "clearHistory": "Borrar Historial",
+        "pickColor": "Seleccionar Color",
+        "generatePalette": "Generar Paleta",
+        "invertColor": "Invertir Color",
+        "lightenColor": "Aclarar Color",
+        "darkenColor": "Oscurecer Color"
     },
     "fr": { 
         "title": "Sélecteur de Couleur",
@@ -82,7 +110,14 @@
         "defaultFormatLabel": "Format de Copie par Défaut",
         "languageSettingLabel": "Langue de l'Interface",
         "colorFormatsTitle": "Formats de Couleur",
-        "copied": "Copié !"
+        "copied": "Copié !",
+        "recentColors": "Couleurs Récentes",
+        "clearHistory": "Effacer l'Historique",
+        "pickColor": "Choisir une Couleur",
+        "generatePalette": "Générer une Palette",
+        "invertColor": "Inverser la Couleur",
+        "lightenColor": "Éclaircir la Couleur",
+        "darkenColor": "Assombrir la Couleur"
     },
     "it": {
         "title": "Selezionatore di Colore",
@@ -99,7 +134,14 @@
         "defaultFormatLabel": "Formato di Copia Predefinito",
         "languageSettingLabel": "Lingua dell'Interfaccia",
         "colorFormatsTitle": "Formati Colore",
-        "copied": "Copiato!"
+        "copied": "Copiato!",
+        "recentColors": "Colori Recenti",
+        "clearHistory": "Cancella Cronologia",
+        "pickColor": "Scegli Colore",
+        "generatePalette": "Genera Tavolozza",
+        "invertColor": "Inverti Colore",
+        "lightenColor": "Schiarisci Colore",
+        "darkenColor": "Scurisci Colore"
     },
     "ru": {
         "title": "Выбор цвета",
@@ -116,7 +158,14 @@
         "defaultFormatLabel": "Формат копирования по умолчанию",
         "languageSettingLabel": "Язык интерфейса",
         "colorFormatsTitle": "Форматы Цветов",
-        "copied": "Скопировано!"
+        "copied": "Скопировано!",
+        "recentColors": "Последние Цвета",
+        "clearHistory": "Очистить Историю",
+        "pickColor": "Выбрать Цвет",
+        "generatePalette": "Создать Палитру",
+        "invertColor": "Инвертировать Цвет",
+        "lightenColor": "Осветлить Цвет",
+        "darkenColor": "Затемнить Цвет"
     },
     "pt": {
         "title": "Selecionador de Cor",
@@ -133,7 +182,14 @@
         "defaultFormatLabel": "Formato de Cópia Padrão",
         "languageSettingLabel": "Idioma da Interface",
         "colorFormatsTitle": "Formatos de Cor",
-        "copied": "Copiado!"
+        "copied": "Copiado!",
+        "recentColors": "Cores Recentes",
+        "clearHistory": "Limpar Histórico",
+        "pickColor": "Escolher Cor",
+        "generatePalette": "Gerar Paleta",
+        "invertColor": "Inverter Cor",
+        "lightenColor": "Clarear Cor",
+        "darkenColor": "Escurecer Cor"
     },
     "nl": {
         "title": "Kleurselecteur",
@@ -150,7 +206,14 @@
         "defaultFormatLabel": "Standaard Kopieerformaat",
         "languageSettingLabel": "Interface Taal",
         "colorFormatsTitle": "Kleurformaten",
-        "copied": "Gekopieerd!"
+        "copied": "Gekopieerd!",
+        "recentColors": "Recente Kleuren",
+        "clearHistory": "Geschiedenis Wissen",
+        "pickColor": "Kleur Kiezen",
+        "generatePalette": "Palet Genereren",
+        "invertColor": "Kleur Omkeren",
+        "lightenColor": "Kleur Lichter Maken",
+        "darkenColor": "Kleur Donkerder Maken"
     },
     "ar": {
         "title": "محدد اللون",
@@ -167,7 +230,14 @@
         "defaultFormatLabel": "تنسيق النسخ الافتراضي",
         "languageSettingLabel": "لغة الواجهة",
         "colorFormatsTitle": "تنسيقات الألوان",
-        "copied": "تم النسخ!"
+        "copied": "تم النسخ!",
+        "recentColors": "الألوان الأخيرة",
+        "clearHistory": "مسح السجل",
+        "pickColor": "اختر لون",
+        "generatePalette": "إنشاء لوحة",
+        "invertColor": "عكس اللون",
+        "lightenColor": "تفتيح اللون",
+        "darkenColor": "تغميق اللون"
     },
     "ja": {
         "title": "色選択器",
@@ -184,7 +254,14 @@
         "defaultFormatLabel": "デフォルトコピー形式",
         "languageSettingLabel": "インターフェース言語",
         "colorFormatsTitle": "カラーフォーマット",
-        "copied": "コピーしました！"
+        "copied": "コピーしました！",
+        "recentColors": "最近の色",
+        "clearHistory": "履歴をクリア",
+        "pickColor": "色を選択",
+        "generatePalette": "パレットを生成",
+        "invertColor": "色を反転",
+        "lightenColor": "色を明るく",
+        "darkenColor": "色を暗く"
     },
     "zh": {
         "title": "颜色选择器",
@@ -201,6 +278,13 @@
         "defaultFormatLabel": "默认复制格式",
         "languageSettingLabel": "界面语言",
         "colorFormatsTitle": "颜色格式",
-        "copied": "已复制！"
+        "copied": "已复制！",
+        "recentColors": "最近颜色",
+        "clearHistory": "清除历史",
+        "pickColor": "选择颜色",
+        "generatePalette": "生成调色板",
+        "invertColor": "反转颜色",
+        "lightenColor": "变亮颜色",
+        "darkenColor": "变暗颜色"
     }
 }

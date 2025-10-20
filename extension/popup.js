@@ -48,6 +48,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const formatOrder = ['hex', 'rgb', 'hsl', 'hsv', 'cmyk'];
     let currentFormatIndex = 0;
     
+    // Color history
+    let colorHistory = JSON.parse(localStorage.getItem('colorHistory') || '[]');
+    const MAX_HISTORY = 5;
+    
+    // Color tools elements
+    const colorHistoryEl = document.getElementById('color-history');
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    const generatePaletteBtn = document.getElementById('generate-palette-btn');
+    const invertColorBtn = document.getElementById('invert-color-btn');
+    const lightenColorBtn = document.getElementById('lighten-color-btn');
+    const darkenColorBtn = document.getElementById('darken-color-btn');
+    
     // Current language (default: browser language or Turkish)
     let currentLanguage = localStorage.getItem('colorPickerLanguage') || getBrowserLanguage();
     
@@ -219,11 +231,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update title
         document.querySelector('.title-text').textContent = t.title;
         
-        // Update button text
-        pickButton.textContent = t.button;
-        
         // Update language modal title
         languageTitle.textContent = t.languageTitle;
+        
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (t[key]) {
+                element.textContent = t[key];
+            }
+        });
         
         // Create language options
         languageList.innerHTML = '';
@@ -613,11 +630,179 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Color History Functions
+    function addToHistory(color) {
+        // Remove if already exists
+        colorHistory = colorHistory.filter(c => c !== color);
+        // Add to beginning
+        colorHistory.unshift(color);
+        // Keep only MAX_HISTORY items
+        if (colorHistory.length > MAX_HISTORY) {
+            colorHistory = colorHistory.slice(0, MAX_HISTORY);
+        }
+        // Save to localStorage
+        localStorage.setItem('colorHistory', JSON.stringify(colorHistory));
+        // Update UI
+        renderColorHistory();
+    }
+
+    function renderColorHistory() {
+        if (!colorHistoryEl) return;
+        
+        colorHistoryEl.innerHTML = '';
+        
+        for (let i = 0; i < MAX_HISTORY; i++) {
+            const div = document.createElement('div');
+            if (colorHistory[i]) {
+                div.className = 'history-color';
+                div.style.backgroundColor = colorHistory[i];
+                div.title = colorHistory[i];
+                div.addEventListener('click', () => {
+                    selectedColor = colorHistory[i];
+                    updateUIAfterPick(colorHistory[i]);
+                });
+            } else {
+                div.className = 'history-color empty';
+            }
+            colorHistoryEl.appendChild(div);
+        }
+    }
+
+    function clearHistory() {
+        colorHistory = [];
+        localStorage.setItem('colorHistory', JSON.stringify(colorHistory));
+        renderColorHistory();
+    }
+
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', clearHistory);
+    }
+
+    // Color Manipulation Functions
+    function invertColor(hex) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return hex;
+        
+        const inverted = {
+            r: 255 - rgb.r,
+            g: 255 - rgb.g,
+            b: 255 - rgb.b
+        };
+        
+        return `#${((1 << 24) + (inverted.r << 16) + (inverted.g << 8) + inverted.b).toString(16).slice(1).toUpperCase()}`;
+    }
+
+    function lightenColor(hex, amount = 20) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return hex;
+        
+        const lightened = {
+            r: Math.min(255, rgb.r + amount),
+            g: Math.min(255, rgb.g + amount),
+            b: Math.min(255, rgb.b + amount)
+        };
+        
+        return `#${((1 << 24) + (lightened.r << 16) + (lightened.g << 8) + lightened.b).toString(16).slice(1).toUpperCase()}`;
+    }
+
+    function darkenColor(hex, amount = 20) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return hex;
+        
+        const darkened = {
+            r: Math.max(0, rgb.r - amount),
+            g: Math.max(0, rgb.g - amount),
+            b: Math.max(0, rgb.b - amount)
+        };
+        
+        return `#${((1 << 24) + (darkened.r << 16) + (darkened.g << 8) + darkened.b).toString(16).slice(1).toUpperCase()}`;
+    }
+
+    function generatePalette(hex) {
+        const colors = [
+            darkenColor(hex, 40),
+            darkenColor(hex, 20),
+            hex,
+            lightenColor(hex, 20),
+            lightenColor(hex, 40)
+        ];
+        
+        // Show palette in color formats modal
+        if (formatList && formatTitle) {
+            formatTitle.textContent = 'Color Palette';
+            formatList.innerHTML = '';
+            
+            colors.forEach((color, index) => {
+                const div = document.createElement('div');
+                div.className = 'format-item';
+                div.style.background = `linear-gradient(90deg, ${color} 50%, rgba(255, 255, 255, 0.1) 50%)`;
+                div.innerHTML = `
+                    <span class="format-label">${index === 2 ? 'Base' : index < 2 ? 'Darker ' + (2 - index) : 'Lighter ' + (index - 2)}</span>
+                    <span class="format-value">${color}</span>
+                `;
+                div.addEventListener('click', async () => {
+                    try {
+                        await copyToClipboard(color);
+                        const originalBg = div.style.background;
+                        div.style.background = 'rgba(76, 175, 80, 0.3)';
+                        setTimeout(() => {
+                            div.style.background = originalBg;
+                        }, 500);
+                    } catch (error) {
+                        console.error('Copy error:', error);
+                    }
+                });
+                formatList.appendChild(div);
+            });
+            
+            colorFormats.classList.add('show');
+        }
+    }
+
+    // Quick Action Buttons
+    if (invertColorBtn) {
+        invertColorBtn.addEventListener('click', () => {
+            if (!selectedColor) return;
+            const inverted = invertColor(selectedColor);
+            selectedColor = inverted;
+            updateUIAfterPick(inverted);
+            addToHistory(inverted);
+        });
+    }
+
+    if (lightenColorBtn) {
+        lightenColorBtn.addEventListener('click', () => {
+            if (!selectedColor) return;
+            const lightened = lightenColor(selectedColor);
+            selectedColor = lightened;
+            updateUIAfterPick(lightened);
+            addToHistory(lightened);
+        });
+    }
+
+    if (darkenColorBtn) {
+        darkenColorBtn.addEventListener('click', () => {
+            if (!selectedColor) return;
+            const darkened = darkenColor(selectedColor);
+            selectedColor = darkened;
+            updateUIAfterPick(darkened);
+            addToHistory(darkened);
+        });
+    }
+
+    if (generatePaletteBtn) {
+        generatePaletteBtn.addEventListener('click', () => {
+            if (!selectedColor) return;
+            generatePalette(selectedColor);
+        });
+    }
+
     // Load translations and apply language settings when page loads
     async function initializeApp() {
         await loadTranslations();
         updateLanguage();
         applyCompactMode();
+        renderColorHistory();
     }
     
     initializeApp();
@@ -628,9 +813,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const pickColor = async () => {
             // Set UI to 'loading' state when button is pressed
-            const t = translations[currentLanguage];
             pickButton.disabled = true;
-            pickButton.textContent = `⏳ ${t.selecting}`;
+            pickButton.style.opacity = '0.6';
             
             try {
                 // Open browser's native color picker and wait for user to select color
@@ -658,7 +842,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } finally {
                 // Re-enable button in all cases (successful or error)
                 pickButton.disabled = false;
-                pickButton.textContent = t.retry;
+                pickButton.style.opacity = '1';
             }
         };
         
@@ -680,28 +864,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 colorCodeDisplay.textContent = formatValue;
                 colorCodeDisplay.classList.add('show');
             }
+            
+            // Add to history
+            addToHistory(hexColor);
         }
 
         // Function to reset interface on error or cancel
         function resetUI() {
-            const t = translations[currentLanguage];
             selectedColor = null;
             
             previewCircle.style.transform = 'scale(0.95)';
             setTimeout(() => { previewCircle.style.transform = 'scale(1)'; }, 200);
             
-            // Hide color code in circle
             colorCodeDisplay.classList.remove('show');
-            colorCodeDisplay.textContent = '';
-            
-            pickButton.textContent = t.button;
         }
 
 
     } else {
         // Browser doesn't support EyeDropper API
-        const t = translations[currentLanguage];
-        pickButton.textContent = '❌ Your Browser Does Not Support This';
         pickButton.disabled = true;
+        pickButton.style.opacity = '0.4';
+        pickButton.title = 'Your browser does not support the EyeDropper API';
     }
 });
