@@ -4,17 +4,29 @@ A modern, multilingual Chrome extension that allows you to pick colors from anyw
 
 ![Extension Preview](https://img.shields.io/badge/Chrome-Extension-blue?style=for-the-badge&logo=google-chrome)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.0.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.2.0-orange?style=for-the-badge)
 
 ## ✨ Features
 
-- 🎨 **Screen Color Picking**: Pick colors from anywhere on your screen
-- 🌍 **Multilingual Support**: Available in 12 languages (English, Turkish, German, Spanish, French, Italian, Russian, Portuguese, Dutch, Arabic, Japanese, Chinese)
+### Core Features
+- 🎨 **Screen Color Picking**: Pick colors from anywhere on your screen using EyeDropper API
+- 🌍 **Multilingual Support**: Available in 11 languages (Turkish, English, German, Spanish, French, Italian, Russian, Portuguese, Dutch, Arabic, Japanese, Chinese)
 - 📋 **Multiple Color Formats**: Support for HEX, RGB, HSL, HSV, and CMYK formats
-- ⚡ **Instant Copy**: Automatically copies selected colors to clipboard
+- ⚡ **Instant Copy**: Automatically copies selected colors to clipboard with visual feedback
 - 🎯 **Modern UI**: Beautiful glassmorphism design with smooth animations
 - ⚙️ **Customizable**: Choose your preferred default color format
 - 🔧 **Settings Panel**: Easy access to all configuration options
+
+### New in v1.2.0
+- 📊 **Dual Mode Interface**: 
+  - **Compact Mode** (200x50px): Minimal space, essential features
+  - **Full Mode** (320x400px): Complete toolset with color utilities
+- 🔄 **Format Cycling**: Quick format switching with arrow buttons in compact mode
+- 📝 **Color History**: Automatically saves last 5 picked colors
+- 🎨 **Color Tools**: Generate palettes, invert, lighten, darken colors
+- 💬 **Smart Tooltips**: Position-aware, multilingual tooltips
+- 🔲 **No Scroll**: Fixed dimensions prevent unwanted scrolling
+- 🌐 **100% Offline**: No external dependencies, completely privacy-friendly
 
 ## 🚀 Installation
 
@@ -37,26 +49,42 @@ A modern, multilingual Chrome extension that allows you to pick colors from anyw
 
 ## 🎯 Usage
 
+### Compact Mode (Default)
 1. **Click the Extension Icon** in your Chrome toolbar
-2. **Click "Start Color Picker"** to activate the color picker
-3. **Click anywhere on your screen** to select a color
-4. **The color is automatically copied** to your clipboard in your preferred format
-5. **Click the color preview circle** to see all available formats
+2. **Click the eyedropper icon** 👁️ to pick a color
+3. **Color is automatically copied** to clipboard
+4. **Use arrow buttons** (◀ ▶) to cycle through formats (HEX → RGB → HSL → HSV → CMYK)
+5. **Click format name** to copy current format
+6. **Click expand icon** to switch to full mode
+
+### Full Mode
+1. **View large rectangular color preview** with code overlay
+2. **Access color history**: Click any of the last 5 colors to reuse
+3. **Use quick action tools**:
+   - 👁️ **Pick Color**: Select new colors from screen
+   - 🎨 **Generate Palette**: Create 5-color palette (2 darker, base, 2 lighter)
+   - ⚪ **Invert**: Get the inverse/complementary color
+   - ☀️ **Lighten**: Make color 20% brighter
+   - 🌙 **Darken**: Make color 20% darker
+4. **Click collapse icon** to return to compact mode
+5. **All tools update** color history automatically
 
 ## 🌍 Supported Languages
 
-- 🇺🇸 English
-- 🇹🇷 Turkish
-- 🇩🇪 German
-- 🇪🇸 Spanish
-- 🇫🇷 French
-- 🇮🇹 Italian
-- 🇷🇺 Russian
-- 🇵🇹 Portuguese
-- 🇳🇱 Dutch
-- 🇸🇦 Arabic
-- 🇯🇵 Japanese
-- 🇨🇳 Chinese
+All interface elements, tooltips, and tool names are fully translated:
+
+- 🇹🇷 Turkish (Türkçe)
+- 🇬🇧 English
+- 🇩🇪 German (Deutsch)
+- 🇪🇸 Spanish (Español)
+- 🇫🇷 French (Français)
+- 🇮🇹 Italian (Italiano)
+- 🇷🇺 Russian (Русский)
+- 🇵🇹 Portuguese (Português)
+- 🇳🇱 Dutch (Nederlands)
+- 🇸🇦 Arabic (العربية)
+- 🇯🇵 Japanese (日本語)
+- 🇨🇳 Chinese (中文)
 
 ## 🎨 Color Formats
 
@@ -72,9 +100,11 @@ The extension supports multiple color formats:
 
 Access settings by clicking the gear icon in the extension popup:
 
-- **Default Copy Format**: Choose which format to copy by default
-- **Interface Language**: Change the extension's language
-- **Version Information**: View extension details
+- **Default Copy Format**: Choose which format to copy by default (HEX, RGB, HSL, HSV, CMYK)
+- **Interface Language**: Change the extension's language (11 languages available)
+- **Mode Preference**: Your compact/full mode choice is automatically saved
+- **Color History**: Automatically managed, stores last 5 colors
+- **Version Information**: View extension details (v1.2.0)
 
 ## 🔧 Technical Details
 
@@ -101,20 +131,25 @@ Access settings by clicking the gear icon in the extension popup:
 
 ### Project Structure
 ```
-bunny-pick/
+extension/
 ├── icons/                 # Extension icons
-│   ├── icon16.png
-│   ├── icon32.png
-│   ├── icon48.png
-│   ├── icon128.png
-│   └── logo.png
+│   ├── icon16.png         # 16x16 icon
+│   ├── icon32.png         # 32x32 icon
+│   ├── icon48.png         # 48x48 icon
+│   ├── icon128.png        # 128x128 icon
+│   ├── logo.png           # Main logo
+│   ├── eyedropper.svg     # Color picker icon
+│   ├── expand.svg         # Expand icon
+│   ├── collapse.svg       # Collapse icon
+│   ├── tick-double.svg    # Copy feedback icon
+│   └── ...                # Other UI icons
 ├── lang/                  # Translation files
-│   └── global.json
+│   └── global.json        # All 11 languages
 ├── popup.html            # Extension popup UI
-├── popup.css             # Extension styles
-├── popup.js              # Extension logic
-├── manifest.json         # Extension manifest
-├── index.html            # Demo page
+├── popup.css             # Extension styles (900+ lines)
+├── popup.js              # Extension logic (800+ lines)
+├── manifest.json         # Extension manifest (v3)
+├── package.json          # Project metadata
 └── README.md             # This file
 ```
 
@@ -122,6 +157,14 @@ bunny-pick/
 1. Clone the repository
 2. No build process required - it's pure HTML/CSS/JS
 3. Load the extension in Chrome developer mode
+
+### Version Management
+```bash
+# Update version (updates both package.json and manifest.json)
+npm run version:patch  # 1.2.0 -> 1.2.1
+npm run version:minor  # 1.2.0 -> 1.3.0
+npm run version:major  # 1.2.0 -> 2.0.0
+```
 
 ### Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this project.

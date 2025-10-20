@@ -7,7 +7,7 @@
   
   [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
   [![Chrome Web Store](https://img.shields.io/badge/Chrome-Extension-blue.svg)](https://chrome.google.com/webstore)
-  [![Version](https://img.shields.io/badge/Version-1.0.0-orange.svg)](https://github.com/Alper-K/bunny-pick/releases)
+  [![Version](https://img.shields.io/badge/Version-1.2.0-orange.svg)](https://github.com/Alper-K/bunny-pick/releases)
 </div>
 
 ## 📖 About
@@ -18,25 +18,40 @@ Bunny Pick is a modern and user-friendly Chrome extension and web application th
 
 ### 🎨 Color Picking
 - **EyeDropper API**: Uses browser's built-in color picker API
-- **Real-time Preview**: Instantly view selected colors
+- **Real-time Preview**: Instantly view selected colors in a modern rectangular display
 - **Multiple Format Support**: Color codes in HEX, RGB, HSL, HSV, CMYK formats
-- **Clipboard Copy**: One-click color code copying to clipboard
+- **Format Cycling**: Quick format switching with arrow buttons in compact mode
+- **Clipboard Copy**: One-click color code copying to clipboard with visual feedback
+- **Color History**: Automatically saves your last 5 picked colors
 
 ### 🌍 Multilingual Support
-- **Turkish** and **English** language support
+- **11 Languages**: Turkish, English, German, Spanish, French, Italian, Russian, Portuguese, Dutch, Arabic, Japanese, Chinese
 - Easy language switching feature
-- Localized interface
+- Fully localized interface including tooltips and tool names
+- Automatic browser language detection
 
 ### 🎯 User Experience
-- **Modern Design**: Clean and intuitive interface
+- **Dual Mode Interface**: 
+  - **Compact Mode** (200x50px): Minimal space usage with essential features
+  - **Full Mode** (320x400px): Complete feature set with color tools
+- **Modern Design**: Clean and intuitive interface with smooth animations
 - **Responsive**: Perfect appearance on all screen sizes
-- **Fast and Lightweight**: Minimal resource usage
-- **Accessibility**: Keyboard navigation and screen reader support
+- **Fast and Lightweight**: Minimal resource usage, 100% offline
+- **Accessibility**: Keyboard navigation, screen reader support, and helpful tooltips
+- **No External Dependencies**: Completely privacy-friendly, no tracking
 
 ### ⚙️ Settings and Customization
 - Default copy format selection
 - Language preference settings
-- User preference saving
+- User preference saving (localStorage)
+- Compact/Full mode preference persistence
+
+### 🛠️ Color Tools (New!)
+- **Color History**: Access your last 5 picked colors instantly
+- **Generate Palette**: Create 5-color palettes (2 darker, base, 2 lighter)
+- **Invert Color**: Get the inverse of any color
+- **Lighten/Darken**: Adjust color brightness with one click
+- **Format Preview**: See format names (HEX, RGB, etc.) in compact mode
 
 ## 🚀 Installation
 
@@ -108,14 +123,49 @@ bunny-pick/
 └── CHANGELOG.md        # Change history
 ```
 
+## 🎨 New Features in v1.2.0
+
+### Compact Mode
+- **Ultra-compact interface** (200x50px) for minimal screen usage
+- **Format cycling** with arrow buttons
+- **Visual feedback** with tick icon on copy
+- **Eyedropper icon** for quick color picking
+- **Persistent mode preference**
+
+### Color Tools
+- **Color History**: Last 5 colors with one-click reuse
+- **Palette Generator**: Automatic 5-color palette creation
+- **Color Manipulation**: Invert, lighten, darken functions
+- **Smart Tooltips**: Multilingual, position-aware tooltips
+
+### Enhanced UX
+- **Rectangular color preview** for better visibility
+- **No scroll**: Fixed dimensions prevent unwanted scrolling
+- **Smooth animations**: Professional transitions between modes
+- **11 languages**: Comprehensive multilingual support
+
 ## 📱 Usage
 
 ### Chrome Extension
+
+#### Compact Mode (Default)
 1. Click the 🐰 icon in the browser toolbar
-2. Click "Start Color Picker" button
-3. Select any color from your screen
-4. Color code is automatically copied to clipboard
-5. View different formats with "Show Color Formats"
+2. Click the eyedropper icon to pick a color
+3. Color code is automatically copied to clipboard
+4. Use arrow buttons (◀ ▶) to cycle through formats
+5. Click on format name to copy current format
+6. Click expand icon to switch to full mode
+
+#### Full Mode
+1. View large color preview with code overlay
+2. Access color history (last 5 colors)
+3. Use quick action tools:
+   - 👁️ **Pick Color**: Select new colors
+   - 🎨 **Generate Palette**: Create color variations
+   - ⚪ **Invert**: Get inverse color
+   - ☀️ **Lighten**: Make color brighter
+   - 🌙 **Darken**: Make color darker
+4. Click collapse icon to return to compact mode
 
 ### Web Application
 1. Open the web page
@@ -127,7 +177,19 @@ bunny-pick/
 
 ### Language Settings
 - Click the 🌍 icon to select language
-- Supported languages: Turkish, English
+- **Supported languages**: 
+  - 🇹🇷 Turkish (Türkçe)
+  - 🇬🇧 English
+  - 🇩🇪 German (Deutsch)
+  - 🇪🇸 Spanish (Español)
+  - 🇫🇷 French (Français)
+  - 🇮🇹 Italian (Italiano)
+  - 🇷🇺 Russian (Русский)
+  - 🇵🇹 Portuguese (Português)
+  - 🇳🇱 Dutch (Nederlands)
+  - 🇸🇦 Arabic (العربية)
+  - 🇯🇵 Japanese (日本語)
+  - 🇨🇳 Chinese (中文)
 
 ### Copy Format
 - Click the ⚙️ icon to open settings
@@ -189,12 +251,14 @@ This project is licensed under the [MIT License](LICENSE). This license allows y
 
 - [ ] Firefox extension support
 - [ ] Safari extension support
-- [ ] Color palette saving feature
-- [ ] Color history
-- [ ] Color analysis tools
-- [ ] More language support
-- [ ] Dark theme
+- [ ] Export color palettes
+- [x] ~~Color history~~ ✅ Completed (v1.2.0)
+- [x] ~~Color analysis tools~~ ✅ Completed (v1.2.0)
+- [x] ~~More language support~~ ✅ Completed (11 languages)
+- [x] ~~Compact mode~~ ✅ Completed (v1.2.0)
+- [ ] Custom color palettes
 - [ ] Keyboard shortcuts
+- [ ] Color contrast checker
 
 ## 🙏 Acknowledgments
 
