@@ -2,6 +2,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const pickButton = document.getElementById('color-picker-btn');
     const previewCircle = document.getElementById('preview');
     
+    // Compact mode elements
+    const container = document.querySelector('.container');
+    const expandBtn = document.getElementById('expand-btn');
+    const collapseBtn = document.getElementById('collapse-btn');
+    const compactColorBtn = document.getElementById('color-picker-compact-btn');
+    const compactColorPreview = document.getElementById('compact-color-preview');
+    const compactFormatDisplay = document.getElementById('compact-format-display');
+    const compactFormatName = document.getElementById('compact-format-name');
+    const compactCopyTick = document.getElementById('compact-copy-tick');
+    const formatPrevBtn = document.getElementById('format-prev-btn');
+    const formatNextBtn = document.getElementById('format-next-btn');
+    
     // Language selection elements
     const languageModal = document.getElementById('language-modal');
     const languageList = document.getElementById('language-list');
@@ -28,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Selected color information
     let selectedColor = null;
     let defaultFormat = localStorage.getItem('defaultFormat') || 'hex';
+    
+    // Compact mode state (default: compact mode)
+    let isCompactMode = localStorage.getItem('compactMode') !== 'false';
+    
+    // Format cycling for compact mode
+    const formatOrder = ['hex', 'rgb', 'hsl', 'hsv', 'cmyk'];
+    let currentFormatIndex = 0;
     
     // Current language (default: browser language or Turkish)
     let currentLanguage = localStorage.getItem('colorPickerLanguage') || getBrowserLanguage();
@@ -462,10 +481,143 @@ document.addEventListener('DOMContentLoaded', function() {
         defaultFormatSelector.value = defaultFormat;
     }
 
+    // Compact mode functions
+    function toggleCompactMode() {
+        isCompactMode = !isCompactMode;
+        localStorage.setItem('compactMode', isCompactMode);
+        applyCompactMode();
+    }
+
+    function applyCompactMode() {
+        if (isCompactMode) {
+            container.classList.add('compact');
+            document.body.classList.add('compact-mode');
+        } else {
+            container.classList.remove('compact');
+            document.body.classList.remove('compact-mode');
+        }
+    }
+
+    // Expand/Collapse button events
+    if (expandBtn) {
+        expandBtn.addEventListener('click', toggleCompactMode);
+    }
+
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', toggleCompactMode);
+    }
+
+    // Update compact format name display
+    function updateCompactFormatName() {
+        if (!selectedColor) return;
+        
+        const currentFormat = formatOrder[currentFormatIndex];
+        
+        if (compactFormatName) {
+            compactFormatName.textContent = currentFormat.toUpperCase();
+        }
+    }
+    
+    // Cycle to next format
+    function nextFormat() {
+        if (!selectedColor) return;
+        currentFormatIndex = (currentFormatIndex + 1) % formatOrder.length;
+        updateCompactFormatName();
+    }
+    
+    // Cycle to previous format
+    function prevFormat() {
+        if (!selectedColor) return;
+        currentFormatIndex = (currentFormatIndex - 1 + formatOrder.length) % formatOrder.length;
+        updateCompactFormatName();
+    }
+    
+    // Show tick icon animation
+    function showCopyTick() {
+        if (compactFormatName && compactCopyTick) {
+            compactFormatName.classList.add('hide');
+            compactCopyTick.classList.add('show');
+            
+            setTimeout(() => {
+                compactFormatName.classList.remove('hide');
+                compactCopyTick.classList.remove('show');
+            }, 1000);
+        }
+    }
+    
+    // Format arrow buttons
+    if (formatNextBtn) {
+        formatNextBtn.addEventListener('click', nextFormat);
+    }
+    
+    if (formatPrevBtn) {
+        formatPrevBtn.addEventListener('click', prevFormat);
+    }
+    
+    // Click on format display to copy
+    if (compactFormatDisplay) {
+        compactFormatDisplay.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (!selectedColor) return;
+            
+            const formats = getColorFormats(selectedColor);
+            if (!formats) return;
+            
+            const currentFormat = formatOrder[currentFormatIndex];
+            const formatValue = formats[currentFormat];
+            
+            try {
+                await copyToClipboard(formatValue);
+                
+                // Show tick icon
+                showCopyTick();
+            } catch (error) {
+                console.error('Copy error:', error);
+            }
+        });
+    }
+    
+    // Compact mode color picker button
+    if (compactColorBtn) {
+        compactColorBtn.addEventListener('click', async () => {
+            if ('EyeDropper' in window) {
+                const eyeDropper = new window.EyeDropper();
+                try {
+                    const result = await eyeDropper.open();
+                    const hexColor = result.sRGBHex.toUpperCase();
+                    
+                    // Update compact preview
+                    compactColorPreview.style.backgroundColor = hexColor;
+                    selectedColor = hexColor;
+                    
+                    // Update format name display
+                    updateCompactFormatName();
+                    
+                    // Copy to clipboard
+                    const formats = getColorFormats(hexColor);
+                    if (formats) {
+                        const formatValue = formats[defaultFormat] || formats.hex;
+                        await copyToClipboard(formatValue);
+                    }
+                    
+                    // Also update full mode preview if available
+                    if (previewCircle) {
+                        previewCircle.style.backgroundColor = hexColor;
+                    }
+                } catch (e) {
+                    if (e.name !== 'AbortError') {
+                        console.error('Color picker error:', e);
+                    }
+                }
+            }
+        });
+    }
+
     // Load translations and apply language settings when page loads
     async function initializeApp() {
         await loadTranslations();
         updateLanguage();
+        applyCompactMode();
     }
     
     initializeApp();

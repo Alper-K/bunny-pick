@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Bunny Pick | Color Picker",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A modern, multilingual Chrome extension for picking colors from anywhere on your screen using the browser's native EyeDropper API",
   "author": "ALPER KINALI",
   "homepage_url": "https://github.com/Alper-K/bunny-pick",
