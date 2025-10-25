@@ -6,9 +6,7 @@
   "author": "ALPER KINALI",
   "homepage_url": "https://github.com/Alper-K/bunny-pick",
   "permissions": [
-    "activeTab",
-    "clipboardWrite",
-    "storage"
+    "clipboardWrite"
   ],
   "action": {
     "default_popup": "popup.html",
