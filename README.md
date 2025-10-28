@@ -6,7 +6,7 @@
   **Modern, multilingual color picker Chrome extension and web application**
   
   [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-  [![Chrome Web Store](https://img.shields.io/badge/Chrome-Extension-blue.svg)]([https://chrome.google.com/webstore](https://chromewebstore.google.com/detail/bunny-pick-color-picker/pkdliohlphpfpgkkfnpkmbecfmkmpfkh?hl=en-US))
+  [[Chrome Web Store](https://chromewebstore.google.com/detail/bunny-pick-color-picker/pkdliohlphpfpgkkfnpkmbecfmkmpfkh?hl=en-US))
   [![Version](https://img.shields.io/badge/Version-1.2.0-orange.svg)](https://github.com/Alper-K/bunny-pick/releases)
 </div>
 
